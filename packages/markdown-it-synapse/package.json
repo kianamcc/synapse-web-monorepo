@@ -42,7 +42,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/markdown-it": "^13.0.9",
-    "@types/node": "^20.17.41",
+    "@types/node": "^22.15.18",
     "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.6.1",
     "markdown-it": "^14.1.0",
