@@ -45,7 +45,7 @@
     "@types/katex": "^0.5.0",
     "@types/lodash": "^4.17.16",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.17.41",
+    "@types/node": "^22.15.21",
     "@types/plotly.js": "^2.35.5",
     "@types/react": "18.3.12",
     "@types/react-plotly.js": "^2.6.3",
