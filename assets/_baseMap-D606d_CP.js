@@ -1,0 +1,1 @@
+import{b as n}from"./_baseEach-DOfzc49G.js";import{b as f}from"./_Uint8Array-SdGWbpCK.js";function u(r,s){var e=-1,a=f(r)?Array(r.length):[];return n(r,function(t,b,i){a[++e]=s(t,b,i)}),a}export{u as b};
