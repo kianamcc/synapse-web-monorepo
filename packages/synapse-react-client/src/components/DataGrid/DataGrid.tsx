@@ -1,5 +1,5 @@
 import { ComplexJSONRenderer } from '@/components/SynapseTable/SynapseTableCell/JSON/ComplexJSONRenderer'
-import { konst } from 'json-joy/lib/json-crdt-patch'
+import { ITimestampStruct, konst } from 'json-joy/lib/json-crdt-patch'
 import throttle from 'lodash-es/throttle'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
@@ -74,11 +74,13 @@ const DataGrid = () => {
     const { columnNames, columnOrder, rows } = modelSnapshot
     const gridRows = rows.map(row => {
       const rowObj: { [key: string]: any } = {}
+      // Cannot read properties of undefined (reading '0') when rowObj[columnName] = row.data[index]
+      const rowData = Array.isArray(row.data) ? row.data : []
       // Use columnOrder to determine which columnNames to use and in what order
       columnOrder.forEach((index: number) => {
         const columnName = columnNames[index]
         if (columnName) {
-          rowObj[columnName] = row.data[index]
+          rowObj[columnName] = rowData[index] ?? ''
         }
       })
       return rowObj
@@ -108,20 +110,44 @@ const DataGrid = () => {
     const rowsArr = model.api.node.get('rows')
     const { columnNames: mcnUpdate } = model.api.getSnapshot()
 
-    // Apply row changes
-    // Update existing rows and add new ones
     for (let i = 0; i < gridRows.length; i++) {
       const editedRow = gridRows[i]
-      const rowObj = rowsArr.get(i)
-      const rowVec = rowObj.get('data')
 
-      // Update each cell in the row
-      Object.entries(editedRow).forEach(([key, value]) => {
-        const columnIndex = mcnUpdate.indexOf(key)
-        if (!isNaN(columnIndex)) {
-          rowVec.set([[columnIndex, konst(value)]])
+      try {
+        // Can return ObjApi or VecApi
+        const rowObj = rowsArr.get(i)
+
+        // If ObjApi, we can access the 'data' property to get the vector
+        // If VecApi, we can use it directly
+        let rowVec
+        if (rowObj && typeof rowObj.get === 'function') {
+          try {
+            rowVec = rowObj.get('data')
+          } catch (error) {
+            rowVec = rowObj
+          }
+        } else {
+          rowVec = rowObj
         }
-      })
+
+        // Apply frontend row edits to the CRDT model while skipping _rowId (frontend-only)
+        Object.entries(editedRow).forEach(([key, value]) => {
+          if (key === '_rowId') {
+            return
+          }
+          const columnIndex = mcnUpdate.indexOf(key)
+          if (columnIndex !== -1) {
+            try {
+              rowVec.set([[columnIndex, konst(value)]])
+            } catch (error) {
+              console.error(`Failed to update row vector`, error)
+            }
+          }
+        })
+      } catch (error) {
+        console.error(`Failed to process row ${i}: `, error)
+        continue
+      }
     }
     return model
   }
@@ -143,6 +169,8 @@ const DataGrid = () => {
     // This mutates the model -- maybe we should move this?
     gridToModel(dataToCommit, getModel()!)
     websocketInstance?.sendPatch()
+
+    console.log('Data committed:', dataToCommit)
 
     // Reset tracking
     createdRowIds.clear()
@@ -167,17 +195,69 @@ const DataGrid = () => {
   )
 
   function addRowToModel() {
-    return { _rowId: genId() }
+    const row: DataGridRow = { _rowId: genId() }
+    colValues.forEach(col => {
+      row[(col as any).key] = ''
+    })
+    return row
   }
 
   const handleChange = (newValue: DataGridRow[], operations: Operation[]) => {
     for (const operation of operations) {
       const rowsArr = modelRef.current?.api.arr(['rows'])
+
       if (operation.type === 'CREATE') {
+        const snapshot = modelRef.current?.api.getSnapshot()
+        const columnNames: string[] = snapshot?.columnNames ?? []
+
         // Add new rows to the model iterating fromRowIndex to toRowIndex
         // and adding rows to the model via the api
         for (let i = operation.fromRowIndex; i < operation.toRowIndex; i++) {
-          rowsArr?.ins(i, [modelRef.current?.api.builder.vec()])
+          const newRowId = modelRef.current?.api.builder.obj()
+          const dataVecId = modelRef.current?.api.builder.vec()
+
+          // Populate vector with empty values for each column
+          const vectorData: [number, ITimestampStruct][] = columnNames.map(
+            (_, index) => [index, modelRef.current!.api.builder.const('')],
+          )
+
+          // Insert the vector into the model
+          if (dataVecId !== undefined) {
+            modelRef.current?.api.builder.insVec(dataVecId, vectorData)
+          }
+
+          const metadataId = modelRef.current?.api.builder.obj()
+          const synapseRowId = modelRef.current?.api.builder.obj()
+
+          // Build the synapseRow object
+          if (synapseRowId !== undefined) {
+            modelRef.current?.api.builder.insObj(synapseRowId, [
+              ['rowId', modelRef.current?.api.builder.const(0)],
+              ['versionNumber', modelRef.current?.api.builder.const(0)],
+              ['etag', modelRef.current?.api.builder.const('')],
+            ])
+          }
+
+          // Build the metadata object
+          if (metadataId !== undefined && synapseRowId !== undefined) {
+            modelRef.current?.api.builder.insObj(metadataId, [
+              ['synapseRow', synapseRowId],
+            ])
+          }
+
+          // Build the complete row object
+          if (
+            newRowId !== undefined &&
+            dataVecId !== undefined &&
+            metadataId !== undefined
+          ) {
+            modelRef.current?.api.builder.insObj(newRowId, [
+              ['data', dataVecId],
+              ['metadata', metadataId],
+            ])
+          }
+
+          rowsArr?.ins(i, [newRowId])
         }
 
         newValue
