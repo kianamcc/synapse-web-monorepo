@@ -1,0 +1,55 @@
+import{T as p}from"./ThemesPlot-D4MNhD19.js";import"./jsx-runtime-D_zvdyIk.js";import"./useFiles-IUvKxpE9.js";import"./VerificationSubmission-BDh1zA9f.js";import"./SynapseConstants-CFs9-P54.js";import"./OrientationBanner-CGogClZ-.js";import"./index-D0quDhpf.js";import"./index-DTxXT8xi.js";import"./iframe-KWEd0gMy.js";import"./spreadSx-CwcO6WA9.js";import"./react-B4sXsje5.js";import"./FullWidthAlert-B4anUMp_.js";import"./Alert-CTSNw1fZ.js";import"./createTheme-C47Y87A4.js";import"./DefaultPropsProvider-B-eVrFvd.js";import"./useSlot-QF2CdK0N.js";import"./useForkRef-BS7QeJ96.js";import"./createSimplePaletteValueFilter-JxKCDb-M.js";import"./createSvgIcon-CVjfqiPX.js";import"./Close-qFP2Q57D.js";import"./IconButton-B5Ug_kUg.js";import"./useTimeout-BA5Bhh4c.js";import"./ButtonBase-BB75u1cV.js";import"./isFocusVisible-B8k4qzLc.js";import"./CircularProgress-tAN3gOWA.js";import"./Paper-Cr9fcRFU.js";import"./useTheme-DuBoDREd.js";import"./useTheme-D_Zdm0Cd.js";import"./Stack-B29pnm8B.js";import"./useThemeProps-CQdUp3Os.js";import"./getThemeProps-BchmXIDX.js";import"./extendSxProp-BXep7pNP.js";import"./Box-CNorT3jp.js";import"./AlertTitle-CvgMJ4Nj.js";import"./Typography-DTA26pXS.js";import"./index-DTH4m4Ei.js";import"./ClickAwayListener-BR_bUt97.js";import"./getReactElementRef-Dkhg43bH.js";import"./index-DkfTgz7N.js";import"./index-CdpVy2gR.js";import"./ownerDocument-DW-IO8s5.js";import"./Grow-DB1geCA4.js";import"./Tooltip-4nKavIt1.js";import"./index-CcncV9V-.js";import"./useControlled-oxRzRN46.js";import"./Popper-CbfEzcwU.js";import"./Button-oPXeTB6o.js";import"./fetchWithExponentialTimeout-UV9FrpR8.js";import"./StringUtils-C95LMFI-.js";import"./useQuery-Bl_cGmi2.js";import"./QueryClientProvider-Cf6MCbvB.js";import"./Link-cokHj4fD.js";import"./Collapse-Dw-KvTKQ.js";import"./_baseUniq-BCVfyyLL.js";import"./_Uint8Array-4Rllf2Qd.js";import"./isArray-DTE_t_uz.js";import"./_getTag-CVbV9I50.js";import"./isEqual-DRGf7CXE.js";import"./noop-DX6rZLP_.js";import"./merge-BbaJJpoi.js";import"./_initCloneObject-BeYdggqJ.js";import"./identity-DKeuBCMA.js";import"./tinycolor-Begke6kS.js";import"./Fade-Dq2lY4po.js";import"./inputBaseClasses-Cw2dFTbj.js";import"./calculateFriendlyFileSize-DICq4dzm.js";import"./CheckCircleTwoTone-Dg-3xUXQ.js";import"./InfoTwoTone-uhtZ8xGb.js";import"./useMutation-BBlMnXEp.js";import"./dayjs.min-BCaxwC-h.js";import"./chunk-AYJ5UCUI-nMwbF-XD.js";import"./cloneDeep-CX99sadt.js";import"./Skeleton-BVM_VZtv.js";import"./SqlFunctions-B8wRZva4.js";import"./unCamelCase-ZiU_emRy.js";import"./LoadingScreen-BbTp3r09.js";import"./Backdrop-pM7Bp62t.js";import"./LinearProgress-DV_c-hu4.js";import"./uniq-DLj5x0dq.js";import"./Plot-C_GIGILe.js";import"./index-Chjiymov.js";import"./_createAggregator-BpK7jthe.js";import"./_baseEach-Cm8Ltugo.js";import"./_baseIteratee-BnpDIpb_.js";import"./_baseGet-D96l304R.js";import"./isSymbol-BK4wvV9q.js";import"./toString-BuLs5hRr.js";import"./hasIn-DU4ulnFB.js";import"./_baseOrderBy-DyPesAn-.js";import"./_baseMap-CHXGnYWt.js";import"./head-aneRfQQJ.js";const Ko={title:"Home Page/ThemesPlot",component:p},o={args:{onPointClick:m=>{console.log(m.event)},topBarPlot:{entityId:"syn21641485",xField:"totalCount",yField:"groupBy",groupField:"consortium",colors:{CSBC:"rgba(64,123,160, 1)","PS-ON":"rgba(91,176,181,1)",ICBP:"rgba(197, 191, 223, 1)",TEC:"rgba(156, 196, 233, 1)"},whereClause:"totalCount is not NULL"},sideBarPlot:{entityId:"syn21649281",xField:"totalCount",yField:"theme",groupField:"consortium",countLabel:"grants",plotStyle:{backgroundColor:"#f5f9fa"},colors:{CSBC:"#1c76af","PS-ON":"#5bb0b5",ICBP:"#9cc4e9",TEC:"#c5bfdf"}},dotPlot:{entityId:"syn21639584",xField:"totalCount",yField:"theme",groupField:"groupBy",infoField:"themeDescription",whereClause:"groupBy IN ('publications', 'tools', 'datasets')",markerSymbols:{tools:"y-down",datasets:"diamond-x",publications:"circle"},plotStyle:{markerLine:"rgba(0, 0, 0,1)",markerFill:"rgba(255, 255, 255,1)",markerSize:11,backgroundColor:"#f5f9fa"}}}};var t,r,i;o.parameters={...o.parameters,docs:{...(t=o.parameters)==null?void 0:t.docs,source:{originalSource:`{
+  args: {
+    onPointClick: e => {
+      console.log(e.event);
+    },
+    topBarPlot: {
+      entityId: 'syn21641485',
+      xField: 'totalCount',
+      yField: 'groupBy',
+      groupField: 'consortium',
+      colors: {
+        CSBC: 'rgba(64,123,160, 1)',
+        'PS-ON': 'rgba(91,176,181,1)',
+        ICBP: 'rgba(197, 191, 223, 1)',
+        TEC: 'rgba(156, 196, 233, 1)'
+      },
+      whereClause: 'totalCount is not NULL'
+    },
+    sideBarPlot: {
+      entityId: 'syn21649281',
+      xField: 'totalCount',
+      yField: 'theme',
+      groupField: 'consortium',
+      countLabel: 'grants',
+      plotStyle: {
+        backgroundColor: '#f5f9fa'
+      },
+      colors: {
+        CSBC: '#1c76af',
+        'PS-ON': '#5bb0b5',
+        ICBP: '#9cc4e9',
+        TEC: '#c5bfdf'
+      }
+    },
+    dotPlot: {
+      entityId: 'syn21639584',
+      xField: 'totalCount',
+      yField: 'theme',
+      groupField: 'groupBy',
+      infoField: 'themeDescription',
+      whereClause: "groupBy IN ('publications', 'tools', 'datasets')",
+      markerSymbols: {
+        tools: 'y-down',
+        datasets: 'diamond-x',
+        publications: 'circle'
+      },
+      plotStyle: {
+        markerLine: 'rgba(0, 0, 0,1)',
+        markerFill: 'rgba(255, 255, 255,1)',
+        markerSize: 11,
+        backgroundColor: '#f5f9fa'
+      }
+    }
+  }
+}`,...(i=(r=o.parameters)==null?void 0:r.docs)==null?void 0:i.source}}};const Mo=["ThemesPlotDemo"];export{o as ThemesPlotDemo,Mo as __namedExportsOrder,Ko as default};
