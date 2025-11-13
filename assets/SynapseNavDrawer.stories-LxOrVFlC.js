@@ -1,8 +1,0 @@
-import{S as m}from"./SynapseNavDrawer-CN4OWj92.js";import"./iframe-CilUHbPg.js";import"./index-r8ZA1smB.js";import"./useDataAccessSubmission-BDSgcr-_.js";import"./useInfiniteQuery-CiMH4Vku.js";import"./useDownloadList-DNIp_CCA.js";import"./waitForAsyncResult-I8jff6SS.js";import"./CreateProjectModal-DO22PJOV.js";import"./ConfirmationDialog-CmKdHCN4.js";import"./DialogBase-C-nhtl71.js";import"./Close-C47av42V.js";import"./HelpPopover-C4EQhFdh.js";import"./MarkdownPopover-CXrifCK2.js";import"./LightTooltip-CnXLnWLu.js";import"./MarkdownSynapse-BIpeO25x.js";import"./SkeletonButton-CSbYuARp.js";import"./SkeletonInlineBlock-CTT3cgnO.js";import"./SkeletonTable-BBjGNDxT.js";import"./SkeletonParagraph-Db2vPRz1.js";import"./SynapseHomepageNavBar-CjISmlBj.js";import"./SageResourcesPopover-DGwH5Vjf.js";import"./Grid-wETwsgbg.js";import"./index-C8mATgyQ.js";import"./MenuItem-DRH3ELNc.js";import"./UserBadge-CpFSGMSz.js";import"./Card-BAFuavy_.js";import"./Chip-CkYJv3x0.js";import"./Slide-D-bRSlQK.js";import"./InputAdornment-Bnwv9wBD.js";import"./listItemButtonClasses-4OVo39T3.js";import"./Badge-BMni_q8D.js";import"./usePreviousProps-EFCUoFvo.js";const F={title:"Synapse/SynapseNavDrawer",component:m},r={args:{initIsOpen:!1,gotoPlace:p=>{window.alert(`Nav bar calling back to change route to ${p}`)}}};var o,t,i;r.parameters={...r.parameters,docs:{...(o=r.parameters)==null?void 0:o.docs,source:{originalSource:`{
-  args: {
-    initIsOpen: false,
-    gotoPlace: (href: string) => {
-      window.alert(\`Nav bar calling back to change route to \${href}\`);
-    }
-  }
-}`,...(i=(t=r.parameters)==null?void 0:t.docs)==null?void 0:i.source}}};const G=["Demo"];export{r as Demo,G as __namedExportsOrder,F as default};
