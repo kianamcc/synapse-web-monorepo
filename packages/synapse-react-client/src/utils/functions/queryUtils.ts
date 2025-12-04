@@ -175,9 +175,7 @@ export function canTableQueryBeAddedToDownloadList<T extends Table = Table>(
 ) {
   const viewCannotIncludeFiles =
     // EntityViews without the file bit mask cannot contain files
-    (entity && isEntityView(entity) && !hasFilesInView(entity)) ||
-    // DatasetCollections cannot contain files
-    (entity && isDatasetCollection(entity))
+    entity && isEntityView(entity) && !hasFilesInView(entity)
 
   if (viewCannotIncludeFiles) {
     return false
@@ -186,7 +184,9 @@ export function canTableQueryBeAddedToDownloadList<T extends Table = Table>(
   return Boolean(
     entityColumnId ||
       (entity &&
-        ((isEntityView(entity) && isFileView(entity)) || isDataset(entity))),
+        ((isEntityView(entity) && isFileView(entity)) ||
+          isDataset(entity) ||
+          isDatasetCollection(entity))),
   )
 }
 

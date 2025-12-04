@@ -1,6 +1,9 @@
 import { useGetEntity } from '@/synapse-queries'
 import { useSynapseContext } from '@/utils'
-import { isDataset } from '@/utils/functions/EntityTypeUtils'
+import {
+  isDataset,
+  isDatasetCollection,
+} from '@/utils/functions/EntityTypeUtils'
 import { canTableQueryBeAddedToDownloadList } from '@/utils/functions/queryUtils'
 import { MenuItem, Tooltip } from '@mui/material'
 import { Table } from '@sage-bionetworks/synapse-types'
@@ -54,8 +57,11 @@ export function DownloadOptions(props: DownloadOptionsProps) {
     fileColumnId,
   )
 
-  // SWC-5878 - Disable downloading a "Draft" dataset
-  const disableDownload = entity && isDataset(entity) && entity.isLatestVersion
+  // SWC-5878 - Disable downloading a "Draft" dataset or dataset collection
+  const disableDownload =
+    entity &&
+    (isDataset(entity) || isDatasetCollection(entity)) &&
+    entity.isLatestVersion
 
   const downloadMenuItems: ReactNode[] = useMemo(() => {
     const downloadMenuItems = []
@@ -65,7 +71,7 @@ export function DownloadOptions(props: DownloadOptionsProps) {
           key={'add-to-download-list'}
           title={
             disableDownload
-              ? 'A draft version of a dataset cannot be added to the Download Cart'
+              ? 'A draft version of a dataset or dataset collection cannot be added to the Download Cart'
               : null
           }
           placement="left"
@@ -77,9 +83,10 @@ export function DownloadOptions(props: DownloadOptionsProps) {
             disabled={disableDownload}
             // If disabled, add pointer-events-auto so the tooltip still works
             style={disableDownload ? { pointerEvents: 'auto' } : {}}
-            onClick={() =>
-              accessToken ? onDownloadFiles() : setShowLoginModal(true)
-            }
+            onClick={() => {
+              if (disableDownload) return
+              return accessToken ? onDownloadFiles() : setShowLoginModal(true)
+            }}
           >
             {getNumberOfResultsToAddToDownloadListCopy(
               hasResettableFilters,
@@ -107,7 +114,7 @@ export function DownloadOptions(props: DownloadOptionsProps) {
         key={'programmatic-options'}
         title={
           disableDownload
-            ? 'A draft version of a dataset cannot be downloaded programmatically'
+            ? 'A draft version of a dataset or dataset collection cannot be downloaded programmatically'
             : null
         }
         placement="left"
@@ -119,7 +126,10 @@ export function DownloadOptions(props: DownloadOptionsProps) {
           disabled={disableDownload}
           // If disabled, add pointer-events-auto so the tooltip still works
           style={disableDownload ? { pointerEvents: 'auto' } : {}}
-          onClick={() => setShowProgrammaticOptions(true)}
+          onClick={() => {
+            if (disableDownload) return
+            setShowProgrammaticOptions(true)
+          }}
         >
           Programmatic Options
         </MenuItem>

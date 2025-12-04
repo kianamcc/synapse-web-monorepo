@@ -293,15 +293,15 @@ describe('facet support', () => {
         true,
       )
     })
-    test('dataset collection cannot be added to download list (SWC-6927)', () => {
+    test('dataset collection can be added to download list', () => {
       expect(
         canTableQueryBeAddedToDownloadList(mockDatasetCollection.entity),
-      ).toEqual(false)
+      ).toEqual(true)
     })
-    test('dataset collection cannot be added to download list even with column ID', () => {
+    test('dataset collection can be added to download list even with column ID', () => {
       expect(
         canTableQueryBeAddedToDownloadList(mockDatasetCollection.entity, '123'),
-      ).toEqual(false)
+      ).toEqual(true)
     })
 
     test('materializedview can be added to download list if a column ID is included', () => {
