@@ -46,9 +46,9 @@ export default function MetadataTaskTableActionCell(props: {
       // Open the Grid in a new tab
       window.open(gridUrl, '_blank', 'noopener')
     } catch (error) {
-      console.error('Error opening data grid for curation task', error)
+      console.error('Error opening Curator for curation task', error)
       displayToast(error.message, 'danger', {
-        title: 'An error occurred while trying to open the data grid',
+        title: 'An error occurred while trying to open Curator',
       })
     }
   }, [curationTask, getGridSessionForTask])

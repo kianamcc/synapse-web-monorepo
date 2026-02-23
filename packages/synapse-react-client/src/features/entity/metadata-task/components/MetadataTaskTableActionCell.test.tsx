@@ -205,14 +205,14 @@ describe('MetadataTaskTableActionCell', () => {
 
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error opening data grid for curation task',
+        'Error opening Curator for curation task',
         expect.any(Error),
       )
       expect(mockDisplayToast).toHaveBeenCalledWith(
         errorMessage,
         'danger',
         expect.objectContaining({
-          title: 'An error occurred while trying to open the data grid',
+          title: 'An error occurred while trying to open Curator',
         }),
       )
     })
