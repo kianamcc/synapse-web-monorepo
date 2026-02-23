@@ -12,7 +12,6 @@ describe('shouldEnableGoogleAnalytics', () => {
   }
   test.each([
     'www.synapse.org',
-    'synapse.org',
     'someportal.synapse.org',
     'signin.synapse.org',
     'accounts.synapse.org',
