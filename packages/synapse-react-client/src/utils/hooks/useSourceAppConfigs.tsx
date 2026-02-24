@@ -1,10 +1,13 @@
 import SourceAppImage from '@/components/SourceAppImage'
 import { useGetQueryResultBundleWithAsyncStatus } from '@/synapse-queries'
 import Palettes from '@/theme/palette/Palettes'
+import { Realm } from '@sage-bionetworks/synapse-client'
 import { PaletteOptions } from '@mui/material'
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { BUNDLE_MASK_QUERY_RESULTS } from '../SynapseConstants'
 import { QueryFilter } from '@sage-bionetworks/synapse-types'
+import { useQueries } from '@tanstack/react-query'
+import { useSynapseContext } from '../context/SynapseContext'
 
 export type SourceAppConfig = {
   appId: string // app ID used in the query params
@@ -16,6 +19,7 @@ export type SourceAppConfig = {
   requestAffiliation: boolean // If set to true, a special screen is shown requesting the user to fill out UserProfile.company
   isPublicized: boolean // If set to true, this will be included in the list of the available Sage Resources
   shortDescription: string
+  realm: Realm
 }
 
 // A static SourceAppConfig to use as a fallback in case the request to get source app configs fails
@@ -29,12 +33,21 @@ export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
   isPublicized: true,
   palette: { ...Palettes.palette },
   shortDescription: '',
+  realm: {
+    id: '0',
+    name: 'Synapse',
+  },
+}
+
+type SourceAppConfigWithRealmId = Omit<SourceAppConfig, 'realm'> & {
+  realmId: string
 }
 
 export const useSourceAppConfigs = (
   sourceAppConfigTableID: string,
   additionalFilters?: QueryFilter[],
 ): SourceAppConfig[] | undefined => {
+  const { synapseClient, keyFactory } = useSynapseContext()
   const { data: tableQueryResult } = useGetQueryResultBundleWithAsyncStatus({
     entityId: sourceAppConfigTableID,
     query: {
@@ -46,7 +59,7 @@ export const useSourceAppConfigs = (
     concreteType: 'org.sagebionetworks.repo.model.table.QueryBundleRequest',
   })
   const rowSet = tableQueryResult?.responseBody?.queryResult?.queryResults
-  // transform row data to SourceAppConfig[]
+  // transform row data to SourceAppConfigWithRealmId[]
   const headers = rowSet?.headers
   const appIdColIndex = headers?.findIndex(
     selectColumn => selectColumn.name == 'appId',
@@ -78,54 +91,113 @@ export const useSourceAppConfigs = (
   const shortDescriptionColIndex = headers?.findIndex(
     selectColumn => selectColumn.name == 'shortDescription',
   )!
+  const realmIdColIndex = headers?.findIndex(
+    selectColumn => selectColumn.name == 'realmId',
+  )!
 
   const rows = rowSet?.rows
-  return rows?.map(row => {
-    const rowVals = row.values
-    const fileHandleId = rowVals[logoFileHandleColIndex]
-    const friendlyName = rowVals[friendlyNameColIndex] ?? ''
-    const logo = (
-      <SourceAppImage
-        sourceAppConfigTableID={sourceAppConfigTableID}
-        fileHandleId={fileHandleId}
-        friendlyName={friendlyName}
-      />
-    )
-    const appPalette: PaletteOptions = {
-      ...Palettes.palette,
-      primary: Palettes.generatePalette(rowVals[primaryColorColIndex] ?? ''),
-      secondary: Palettes.generatePalette(
-        rowVals[secondaryColorColIndex] ?? '',
-      ),
-    }
-    const appId = rowVals[appIdColIndex] == null ? '' : rowVals[appIdColIndex]
-    const appURL =
-      rowVals[appURLColIndex] == null ? '' : rowVals[appURLColIndex]
-    const description =
-      rowVals[descriptionColIndex] == null ? '' : rowVals[descriptionColIndex]
-    const shortDescription =
-      rowVals[shortDescriptionColIndex] == null
-        ? ''
-        : rowVals[shortDescriptionColIndex]
-    const requestAffiliation =
-      rowVals[requestAffiliationColIndex] == null
-        ? false
-        : rowVals[requestAffiliationColIndex] == 'true'
-    const isPublicized =
-      rowVals[isPublicizedColIndex] == null
-        ? true
-        : rowVals[isPublicizedColIndex] == 'true'
-    const sourceAppConfig: SourceAppConfig = {
-      appId,
-      appURL,
-      description,
-      friendlyName,
-      requestAffiliation,
-      logo,
-      isPublicized,
-      palette: appPalette,
-      shortDescription,
-    }
-    return sourceAppConfig
+
+  // Extract configs with realmIds first
+  const configsWithRealmId: SourceAppConfigWithRealmId[] | undefined = useMemo(
+    () =>
+      rows?.map(row => {
+        const rowVals = row.values
+        const fileHandleId = rowVals[logoFileHandleColIndex]
+        const friendlyName = rowVals[friendlyNameColIndex] ?? ''
+        const logo = (
+          <SourceAppImage
+            sourceAppConfigTableID={sourceAppConfigTableID}
+            fileHandleId={fileHandleId}
+            friendlyName={friendlyName}
+          />
+        )
+        const appPalette: PaletteOptions = {
+          ...Palettes.palette,
+          primary: Palettes.generatePalette(
+            rowVals[primaryColorColIndex] ?? '',
+          ),
+          secondary: Palettes.generatePalette(
+            rowVals[secondaryColorColIndex] ?? '',
+          ),
+        }
+        const appId =
+          rowVals[appIdColIndex] == null ? '' : rowVals[appIdColIndex]
+        const appURL =
+          rowVals[appURLColIndex] == null ? '' : rowVals[appURLColIndex]
+        const description =
+          rowVals[descriptionColIndex] == null
+            ? ''
+            : rowVals[descriptionColIndex]
+        const shortDescription =
+          rowVals[shortDescriptionColIndex] == null
+            ? ''
+            : rowVals[shortDescriptionColIndex]
+        const requestAffiliation =
+          rowVals[requestAffiliationColIndex] == null
+            ? false
+            : rowVals[requestAffiliationColIndex] == 'true'
+        const isPublicized =
+          rowVals[isPublicizedColIndex] == null
+            ? true
+            : rowVals[isPublicizedColIndex] == 'true'
+        const realmId =
+          rowVals[realmIdColIndex] == null ? '0' : rowVals[realmIdColIndex]
+        return {
+          appId,
+          appURL,
+          description,
+          friendlyName,
+          requestAffiliation,
+          logo,
+          isPublicized,
+          palette: appPalette,
+          shortDescription,
+          realmId,
+        }
+      }),
+    [
+      rows,
+      logoFileHandleColIndex,
+      friendlyNameColIndex,
+      sourceAppConfigTableID,
+      primaryColorColIndex,
+      secondaryColorColIndex,
+      appIdColIndex,
+      appURLColIndex,
+      descriptionColIndex,
+      shortDescriptionColIndex,
+      requestAffiliationColIndex,
+      isPublicizedColIndex,
+      realmIdColIndex,
+    ],
+  )
+
+  // Fetch all realms in parallel
+  const realmQueries = useQueries({
+    queries:
+      configsWithRealmId?.map(config => ({
+        queryKey: keyFactory.getRealmByIdQueryKey(config.realmId),
+        queryFn: () =>
+          synapseClient.realmServicesClient.getRepoV1RealmId({
+            id: config.realmId,
+          }),
+      })) ?? [],
   })
+
+  // Combine configs with realm data
+  return useMemo(() => {
+    if (!configsWithRealmId) return undefined
+
+    // Check if all realm queries have succeeded
+    const allRealmsLoaded = realmQueries.every(query => query.isSuccess)
+    if (!allRealmsLoaded) return undefined
+
+    return configsWithRealmId.map((config, index) => {
+      const realm = realmQueries[index].data
+      return {
+        ...config,
+        realm,
+      }
+    })
+  }, [configsWithRealmId, realmQueries])
 }

@@ -33,6 +33,10 @@ import {
   TEXT_MATCHES_QUERY_FILTER_CONCRETE_TYPE_VALUE,
   TextMatchesQueryFilter,
 } from '@sage-bionetworks/synapse-types'
+import {
+  OAuthIdentityProvider,
+  OAuthIdentityProviderConcreteTypeEnum,
+} from '@sage-bionetworks/synapse-client'
 
 /**
  * TypeScript doesn't support nominal typing, but we can utilize the concreteType field in Synapse objects to identify the class of an object. This function
@@ -121,3 +125,9 @@ export const isMembershipInvtnSignedToken =
   isTypeViaConcreteTypeFactory<MembershipInvtnSignedToken>(
     MEMBERSHIP_INVITATION_CONCRETE_TYPE_VALUE,
   )
+export const isOAuthIdentityProvider = isTypeViaConcreteTypeFactory<
+  OAuthIdentityProvider,
+  { concreteType: string }
+>(
+  OAuthIdentityProviderConcreteTypeEnum.org_sagebionetworks_repo_model_auth_OAuthIdentityProvider,
+)

@@ -24,6 +24,27 @@ export function useGetCurrentRealm<TData = Realm>(
 }
 
 /**
+ * Get a realm by its ID.
+ *
+ * @param realmId - The realm ID to fetch
+ * @param options - Query options
+ * @returns The realm object
+ */
+export function useGetRealm<TData = Realm>(
+  realmId: string,
+  options?: Partial<UseQueryOptions<Realm, SynapseClientError, TData>>,
+) {
+  const { synapseClient, keyFactory } = useSynapseContext()
+
+  return useQuery({
+    ...options,
+    queryKey: keyFactory.getRealmByIdQueryKey(realmId),
+    queryFn: () =>
+      synapseClient.realmServicesClient.getRepoV1RealmId({ id: realmId }),
+  })
+}
+
+/**
  * Get the realm principals for the current user's realm.
  *
  * @param options - Query options
