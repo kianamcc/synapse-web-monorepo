@@ -1,11 +1,22 @@
 import { DropdownMenu, DropdownMenuItem } from '../menu/DropdownMenu'
 import { DownloadOutlined as DownloadIcon } from '@mui/icons-material'
-import { EntityType } from '@sage-bionetworks/synapse-client'
+import {
+  AddToDownloadListRequest,
+  EntityType,
+} from '@sage-bionetworks/synapse-client'
 import { useState } from 'react'
 import { ProgrammaticInstructionsModal } from '../ProgrammaticInstructionsModal/ProgrammaticInstructionsModal'
 import { ModalDownload } from '../ModalDownload/ModalDownload'
-import { useGetEntity, useGetVersions } from '@/synapse-queries'
-import { isVersionableEntity } from '@/utils/functions/EntityTypeUtils'
+import {
+  useGetEntity,
+  useGetVersions,
+  useGetEntityChildren,
+} from '@/synapse-queries'
+import {
+  hasFilesInView,
+  isEntityView,
+  isVersionableEntity,
+} from '@/utils/functions/EntityTypeUtils'
 import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import { useSynapseContext } from '@/utils'
 import {
@@ -109,11 +120,9 @@ function getMenuItemForAction(
     entityId: string
     entityVersionNumber: number | undefined
   }) => void,
-  addQueryToDownloadList: (request: {
-    parentId: string
-    concreteType: 'org.sagebionetworks.repo.model.download.AddToDownloadListRequest'
-  }) => void,
+  addQueryToDownloadList: (request: AddToDownloadListRequest) => void,
   versionNumber?: number,
+  addToCartDisabled?: boolean,
 ): DropdownMenuItem {
   switch (downloadAction) {
     case DownloadAction.downloadFile:
@@ -128,17 +137,39 @@ function getMenuItemForAction(
     case DownloadAction.addToCart:
       return {
         text: 'Add to Download Cart',
+        disabled: addToCartDisabled,
+        tooltipText: addToCartDisabled
+          ? entityType === EntityType.entityview
+            ? 'This view does not include files'
+            : 'No files are directly in this folder'
+          : 'Add file(s) to your download cart',
         onClick: () => {
-          // Use different functions based on entity type
           if (
             entityType === EntityType.file ||
-            entityType === EntityType.recordset ||
-            entityType === EntityType.dataset ||
-            entityType === EntityType.datasetcollection
+            entityType === EntityType.recordset
           ) {
             addFileToDownloadList({
               entityId,
               entityVersionNumber: versionNumber,
+            })
+          }
+          // dataset
+          else if (entityType === EntityType.dataset) {
+            addQueryToDownloadList({
+              parentId: entityId,
+              useVersionNumber: true,
+              concreteType:
+                'org.sagebionetworks.repo.model.download.AddToDownloadListRequest',
+            })
+          }
+          // entity view
+          else if (entityType === EntityType.entityview) {
+            addQueryToDownloadList({
+              concreteType:
+                'org.sagebionetworks.repo.model.download.AddToDownloadListRequest',
+              query: {
+                sql: `SELECT * FROM ${entityId}`,
+              },
             })
           } else {
             addQueryToDownloadList({
@@ -148,7 +179,6 @@ function getMenuItemForAction(
             })
           }
         },
-        tooltipText: 'Add file(s) to your download cart',
       }
     case DownloadAction.programmaticAccess:
       return {
@@ -185,7 +215,7 @@ export function getDownloadActionsForEntityType(
     case EntityType.file:
     case EntityType.recordset:
       return [
-        [DownloadAction.downloadFile],
+        // [DownloadAction.downloadFile], // todo: implement direct file download functionality then uncomment this option
         [DownloadAction.addToCart, DownloadAction.programmaticAccess],
       ]
     case EntityType.project:
@@ -195,8 +225,6 @@ export function getDownloadActionsForEntityType(
       return [[DownloadAction.programmaticAccessDocker]]
     case EntityType.entityview:
     case EntityType.dataset:
-    case EntityType.table:
-    case EntityType.datasetcollection:
       return [
         [
           DownloadAction.exportTable,
@@ -204,6 +232,8 @@ export function getDownloadActionsForEntityType(
           DownloadAction.addToCart,
         ],
       ]
+    case EntityType.datasetcollection:
+    case EntityType.table:
     case EntityType.materializedview:
     case EntityType.submissionview:
     case EntityType.virtualtable:
@@ -342,6 +372,31 @@ export function EntityDownloadButton(props: {
     setShowProgrammaticAccess(false)
   }
 
+  const isFolderOrProject =
+    props.entityType === EntityType.folder ||
+    props.entityType === EntityType.project
+
+  const { data: entityChildren } = useGetEntityChildren(
+    {
+      parentId: props.entityId,
+      includeTypes: [EntityType.file],
+      includeTotalChildCount: true,
+    },
+    {
+      enabled: isFolderOrProject,
+    },
+  )
+
+  const hasNoImmediateFileChildren =
+    isFolderOrProject && entityChildren?.totalChildCount === 0
+
+  const { data: entityData } = useGetEntity(props.entityId)
+
+  const entityViewHasNoFiles =
+    entityData && isEntityView(entityData) && !hasFilesInView(entityData)
+
+  const addToCartDisabled = hasNoImmediateFileChildren || entityViewHasNoFiles
+
   // state to manage export metadata modal visibility
   const [showExportMetadata, setShowExportMetadata] = useState<boolean>(false)
 
@@ -363,6 +418,7 @@ export function EntityDownloadButton(props: {
         addFileToDownloadList,
         addQueryToDownloadList,
         latestVersionNumber,
+        addToCartDisabled,
       ),
     ),
   )
