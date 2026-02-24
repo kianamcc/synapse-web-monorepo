@@ -9,6 +9,8 @@ import { hex2ascii } from 'synapse-react-client/utils/functions/StringUtils'
 import { useFramebuster } from 'synapse-react-client/utils/AppUtils/AppUtils'
 import useMaybeForceEnable2FA from './hooks/useMaybeForceEnable2FA'
 import useGoogleAnalytics from 'synapse-react-client/utils/analytics/useGoogleAnalytics'
+import { BlockingLoader } from 'synapse-react-client/components/LoadingScreen/LoadingScreen'
+import { UNKNOWN_SOURCE_APP_ID } from 'synapse-react-client/utils/hooks/useSourceAppConfigs'
 
 function AppInitializer(props: { children?: ReactNode }) {
   const [signedToken, setSignedToken] = useState<
@@ -65,6 +67,10 @@ function AppInitializer(props: { children?: ReactNode }) {
   useMaybePromptToSignTermsOfService()
   // Anywhere in the app, redirect the user to enable 2FA if required
   useMaybeForceEnable2FA()
+  const sourceApp = useSourceApp()
+  if (sourceApp.appId === UNKNOWN_SOURCE_APP_ID) {
+    return <BlockingLoader show={true} hintText="Initializing..." />
+  }
 
   return (
     <AppContextProvider

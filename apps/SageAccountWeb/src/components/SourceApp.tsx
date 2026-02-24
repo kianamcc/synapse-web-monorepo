@@ -35,11 +35,7 @@ export function SourceAppLogo(props: Omit<BoxProps, 'children' | 'className'>) {
   const sourceAppConfig = useSourceApp()
   return (
     <Box className="SourceAppLogo" {...props}>
-      {sourceAppConfig ? (
-        sourceAppConfig.logo
-      ) : (
-        <Skeleton variant="rectangular" width={250} height={65} />
-      )}
+      {sourceAppConfig && sourceAppConfig.logo}
     </Box>
   )
 }

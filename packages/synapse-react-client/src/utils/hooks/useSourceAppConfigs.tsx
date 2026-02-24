@@ -22,9 +22,10 @@ export type SourceAppConfig = {
   realm: Realm
 }
 
+export const UNKNOWN_SOURCE_APP_ID = 'unknownSourceAppId'
 // A static SourceAppConfig to use as a fallback in case the request to get source app configs fails
 export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
-  appId: '',
+  appId: UNKNOWN_SOURCE_APP_ID,
   appURL: '',
   description: '',
   friendlyName: 'Synapse',
