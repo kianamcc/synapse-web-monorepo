@@ -29,7 +29,6 @@ import {
   StyledOuterContainer,
 } from '@/components/StyledComponents'
 import { SYNAPSE_SOURCE_APP_ID, useSourceApp } from '@/components/useSourceApp'
-import type { Realm } from '@sage-bionetworks/synapse-client'
 import SynapseClient from 'synapse-react-client/synapse-client'
 import * as SynapseConstants from 'synapse-react-client/utils/SynapseConstants'
 import { displayToast } from 'synapse-react-client/components/ToastMessage/ToastMessage'

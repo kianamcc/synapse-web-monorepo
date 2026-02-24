@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, BoxProps, Typography } from '@mui/material'
-import Skeleton from '@mui/material/Skeleton'
 import { useSourceApp } from './useSourceApp'
 import { SkeletonTable } from 'synapse-react-client/components/Skeleton/SkeletonTable'
 
