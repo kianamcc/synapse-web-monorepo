@@ -1,3 +1,0 @@
-import{r as c,j as e}from"./iframe-Dmz0OYQW.js";import{S as s}from"./SageResourcesPopover-KnRiYE1I.js";import"./index-Chi_LkuB.js";import"./Grid-Du4p1N6T.js";const g={title:"Home Page/SageResources",component:s,render:function(p){const[t,o]=c.useState(null),a=()=>{o(null)};return e.jsxs(e.Fragment,{children:[e.jsx("a",{onClick:n=>o(n.currentTarget),children:"Show portals"}),e.jsx(s,{anchorEl:t,onClose:a})]})}},r={args:{}};r.parameters={...r.parameters,docs:{...r.parameters?.docs,source:{originalSource:`{
-  args: {}
-}`,...r.parameters?.docs?.source}}};const x=["SageResourcesPopoverDemo"];export{r as SageResourcesPopoverDemo,x as __namedExportsOrder,g as default};
