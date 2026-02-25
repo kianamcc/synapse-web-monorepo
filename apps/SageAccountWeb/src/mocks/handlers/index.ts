@@ -10,9 +10,7 @@ const backendOrigin = getEndpoint(BackendDestinationEnum.REPO_ENDPOINT)
 
 const additionalHandlers = [
   // Mock anonymous token endpoint
-  http.get(`${backendOrigin}/auth/v1/anonymousToken`, ({ request }) => {
-    const url = new URL(request.url)
-    const realm = url.searchParams.get('realm') || '0'
+  http.get(`${backendOrigin}/auth/v1/anonymousToken`, () => {
     return HttpResponse.json({
       sessionToken: 'mock-anonymous-token',
     })

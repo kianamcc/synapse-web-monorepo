@@ -20,7 +20,6 @@ import {
   ApplicationSessionContextProvider,
   ApplicationSessionContextType,
 } from 'synapse-react-client/utils/AppUtils/session/ApplicationSessionContext'
-import { MOCK_APPLICATION_SESSION_CONTEXT } from 'synapse-react-client/mocks'
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,4 +1,3 @@
-import { oauth2PromptFor2FAHandler } from '@/mocks/handlers/oauth2Handlers'
 import { server } from '@/mocks/node.js'
 import { TwoFactorAuthResetToken } from '@sage-bionetworks/synapse-types'
 import {
@@ -104,11 +103,11 @@ describe('ResetTwoFactorAuth', () => {
     // Simulate that the user has completed SSO and received a 2FA error response
     const twoFactorAuthSSOErrorResponse = {
       concreteType:
-        'org.sagebionetworks.repo.model.auth.TwoFactorAuthErrorResponse',
+        'org.sagebionetworks.repo.model.auth.TwoFactorAuthErrorResponse' as const,
       userId: 123,
       twoFaToken: 'fakeTwoFaToken',
       reason: 'Two-factor auth is required',
-      errorCode: 'TWO_FA_REQUIRED',
+      errorCode: 'TWO_FA_REQUIRED' as const,
     }
 
     const { user } = renderComponent({
