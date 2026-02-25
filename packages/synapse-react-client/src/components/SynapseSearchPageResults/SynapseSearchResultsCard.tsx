@@ -4,13 +4,14 @@ import {
   getEndpoint,
 } from '@/utils/functions/getEndpoint'
 import { StyledComponent } from '@emotion/styled'
-import { Update as UpdateIcon } from '@mui/icons-material'
+import { InfoOutline, Update as UpdateIcon } from '@mui/icons-material'
 import {
   Box,
   Chip,
   Link,
   Paper,
   PaperProps,
+  Stack,
   styled,
   Typography,
 } from '@mui/material'
@@ -21,12 +22,16 @@ import FavoriteButton from '../favorites/FavoriteButton'
 import { EntityDownloadButton } from '../EntityDownloadButton/EntityDownloadButton'
 import HasAccessChip from './HasAccessChip'
 import { searchResultsCardChipStyles } from './chipStyles'
+import useGetEntityMetadata from '@/utils/hooks/useGetEntityMetadata'
+import styles from './SynapseSearchResultsCard.module.scss'
+import { calculateFriendlyFileSize } from '@/utils/functions/calculateFriendlyFileSize'
 
 export type SynapseSearchResultsCardProps = {
   entityId: string
   name: string
   entityType: EntityType
   modifiedOn: number
+  locatedIn?: { name: string; id: string }
 }
 
 const SynapseSearchResultsCardContainer: StyledComponent<PaperProps> = styled(
@@ -34,7 +39,7 @@ const SynapseSearchResultsCardContainer: StyledComponent<PaperProps> = styled(
   {
     label: 'SynapseSearchResultsCardContainer',
   },
-)(({ theme }) => ({
+)({
   display: 'flex',
   flexDirection: 'column',
   minHeight: '250px',
@@ -42,9 +47,15 @@ const SynapseSearchResultsCardContainer: StyledComponent<PaperProps> = styled(
   borderRadius: '10px',
   padding: '32px',
   gap: '15px',
-}))
+})
 
 export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
+  const { fileHandle } = useGetEntityMetadata(
+    props.entityType === EntityType.file ? props.entityId : '',
+  )
+
+  const fileSize = fileHandle?.contentSize
+
   return (
     <SynapseSearchResultsCardContainer>
       <Box
@@ -106,14 +117,47 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
           gap: '8px',
         }}
       >
-        <UpdateIcon />
-        <Typography
-          sx={{
-            fontSize: '14px',
-          }}
-        >
-          Last updated: {formatDate(dayjs.unix(props.modifiedOn), 'M/D/YYYY')}
-        </Typography>
+        <Stack sx={{ gap: '20px' }}>
+          <Box sx={{ display: 'flex' }}>
+            <UpdateIcon className={styles.cardMetadataIcon} />
+            <Typography className={styles.cardMetadataTypographyWithIcon}>
+              Last updated:{' '}
+              {formatDate(dayjs.unix(props.modifiedOn), 'M/D/YYYY')}
+            </Typography>
+          </Box>
+          {fileSize && (
+            <Box sx={{ display: 'flex' }}>
+              <InfoOutline className={styles.cardMetadataIcon} />
+              <Typography className={styles.cardMetadataTypographyWithIcon}>
+                File size: <b>{calculateFriendlyFileSize(fileSize)}</b>
+              </Typography>
+            </Box>
+          )}
+          {props.locatedIn && (
+            <Box sx={{ display: 'flex', marginLeft: '24px' }}>
+              <Typography className={styles.cardMetadataTypographyWithIcon}>
+                Located in:{' '}
+                <EntityTypeIcon
+                  type={EntityType.project}
+                  wrap={false}
+                  sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
+                />{' '}
+                <Link
+                  sx={{
+                    fontWeight: 400,
+                    color: 'var(--synapse-gray-900) !important',
+                    '&:hover': { color: 'var(--synapse-gray-900) !important' },
+                  }}
+                  href={`${getEndpoint(
+                    BackendDestinationEnum.PORTAL_ENDPOINT,
+                  )}Synapse:${props.locatedIn?.id}`}
+                >
+                  {props.locatedIn?.name}{' '}
+                </Link>
+              </Typography>
+            </Box>
+          )}
+        </Stack>
       </Box>
     </SynapseSearchResultsCardContainer>
   )
