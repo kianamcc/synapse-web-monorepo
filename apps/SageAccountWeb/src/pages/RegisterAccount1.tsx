@@ -97,12 +97,12 @@ const RegisterAccount1 = (): React.ReactNode => {
   const {
     appId: sourceAppId,
     friendlyName: sourceAppName,
-    realm,
+    defaultRealm,
   } = useSourceApp()
   const showSageBionetworksIdp = useGetFeatureFlag(
     FeatureFlagEnum.SAGE_BIONETWORKS_IDP,
   )
-  const isArcusApp = hasArcusProvider(realm)
+  const isArcusApp = hasArcusProvider(defaultRealm)
   const [page, setPage] = useState(Pages.CHOOSE_REGISTRATION)
   const [membershipInvitationEmail, setMembershipInvitationEmail] =
     useState<string>()
