@@ -1,5 +1,5 @@
 import { SignedTokenInterface } from '@sage-bionetworks/synapse-types'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, Suspense, useEffect, useState } from 'react'
 import * as SynapseConstants from 'synapse-react-client/utils/SynapseConstants'
 import { AppContextProvider } from './AppContext'
 import { useSourceApp } from './components/useSourceApp'
@@ -10,7 +10,6 @@ import { useFramebuster } from 'synapse-react-client/utils/AppUtils/AppUtils'
 import useMaybeForceEnable2FA from './hooks/useMaybeForceEnable2FA'
 import useGoogleAnalytics from 'synapse-react-client/utils/analytics/useGoogleAnalytics'
 import { BlockingLoader } from 'synapse-react-client/components/LoadingScreen/LoadingScreen'
-import { UNKNOWN_SOURCE_APP_ID } from 'synapse-react-client/utils/hooks/useSourceAppConfigs'
 
 function AppInitializer(props: { children?: ReactNode }) {
   const [signedToken, setSignedToken] = useState<
@@ -67,21 +66,21 @@ function AppInitializer(props: { children?: ReactNode }) {
   useMaybePromptToSignTermsOfService()
   // Anywhere in the app, redirect the user to enable 2FA if required
   useMaybeForceEnable2FA()
-  const sourceApp = useSourceApp()
-  if (sourceApp.appId === UNKNOWN_SOURCE_APP_ID) {
-    return <BlockingLoader show={true} hintText="Initializing..." />
-  }
 
   return (
-    <AppContextProvider
-      appContext={{
-        appId,
-        redirectURL: appURL,
-        signedToken,
-      }}
+    <Suspense
+      fallback={<BlockingLoader show={true} hintText="Initializing..." />}
     >
-      {!isFramed && props.children}
-    </AppContextProvider>
+      <AppContextProvider
+        appContext={{
+          appId,
+          redirectURL: appURL,
+          signedToken,
+        }}
+      >
+        {!isFramed && props.children}
+      </AppContextProvider>
+    </Suspense>
   )
 }
 

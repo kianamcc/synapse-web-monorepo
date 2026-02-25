@@ -125,9 +125,3 @@ export const isMembershipInvtnSignedToken =
   isTypeViaConcreteTypeFactory<MembershipInvtnSignedToken>(
     MEMBERSHIP_INVITATION_CONCRETE_TYPE_VALUE,
   )
-export const isOAuthIdentityProvider = isTypeViaConcreteTypeFactory<
-  OAuthIdentityProvider,
-  { concreteType: string }
->(
-  OAuthIdentityProviderConcreteTypeEnum.org_sagebionetworks_repo_model_auth_OAuthIdentityProvider,
-)

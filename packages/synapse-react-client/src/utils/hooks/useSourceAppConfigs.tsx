@@ -1,13 +1,14 @@
 import SourceAppImage from '@/components/SourceAppImage'
-import { useGetQueryResultBundleWithAsyncStatus } from '@/synapse-queries'
+import SynapseClient from '@/synapse-client'
 import Palettes from '@/theme/palette/Palettes'
 import { Realm } from '@sage-bionetworks/synapse-client'
 import { PaletteOptions } from '@mui/material'
 import { ReactNode, useMemo } from 'react'
 import { BUNDLE_MASK_QUERY_RESULTS } from '../SynapseConstants'
 import { QueryFilter } from '@sage-bionetworks/synapse-types'
-import { useQueries } from '@tanstack/react-query'
+import { useQueries, useSuspenseQuery } from '@tanstack/react-query'
 import { useSynapseContext } from '../context/SynapseContext'
+import { tableQueryUseQueryDefaults } from '@/synapse-queries'
 
 export type SourceAppConfig = {
   appId: string // app ID used in the query params
@@ -48,8 +49,9 @@ export const useSourceAppConfigs = (
   sourceAppConfigTableID: string,
   additionalFilters?: QueryFilter[],
 ): SourceAppConfig[] | undefined => {
-  const { synapseClient, keyFactory } = useSynapseContext()
-  const { data: tableQueryResult } = useGetQueryResultBundleWithAsyncStatus({
+  const { accessToken, synapseClient, keyFactory } = useSynapseContext()
+
+  const queryBundleRequest = {
     entityId: sourceAppConfigTableID,
     query: {
       sql: `SELECT * FROM ${sourceAppConfigTableID}`,
@@ -57,7 +59,21 @@ export const useSourceAppConfigs = (
       additionalFilters,
     },
     partMask: BUNDLE_MASK_QUERY_RESULTS,
-    concreteType: 'org.sagebionetworks.repo.model.table.QueryBundleRequest',
+    concreteType:
+      'org.sagebionetworks.repo.model.table.QueryBundleRequest' as const,
+  }
+
+  const { data: tableQueryResult } = useSuspenseQuery({
+    ...tableQueryUseQueryDefaults,
+    queryKey: keyFactory.getEntityTableQueryResultWithAsyncStatusQueryKey(
+      queryBundleRequest,
+      false,
+    ),
+    queryFn: () =>
+      SynapseClient.getQueryTableAsyncJobResults(
+        queryBundleRequest,
+        accessToken,
+      ),
   })
   const rowSet = tableQueryResult?.responseBody?.queryResult?.queryResults
   // transform row data to SourceAppConfigWithRealmId[]
