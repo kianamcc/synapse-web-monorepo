@@ -13,6 +13,7 @@ import {
   useGetEntityChildren,
 } from '@/synapse-queries'
 import {
+  entityTypeToFriendlyName,
   hasFilesInView,
   isDataset,
   isEntityView,
@@ -214,18 +215,8 @@ const getAddToCartTooltip = (
   if (!isDisabled) {
     return 'Add file(s) to your download cart'
   }
-
-  switch (entityType) {
-    case EntityType.entityview:
-      return 'This view does not include files'
-    case EntityType.dataset:
-      return 'This dataset does not include any files'
-    case EntityType.folder:
-    case EntityType.project:
-      return 'No files are directly in this folder'
-    default:
-      return 'No files available to add to cart'
-  }
+  const entityFriendlyName = entityTypeToFriendlyName(entityType)
+  return `This ${entityFriendlyName} has no accessible files`
 }
 
 // Function that returns DropdownMenuItem
