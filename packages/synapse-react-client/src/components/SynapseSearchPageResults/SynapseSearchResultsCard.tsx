@@ -143,11 +143,7 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
                   sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
                 />{' '}
                 <Link
-                  sx={{
-                    fontWeight: 400,
-                    color: 'var(--synapse-gray-900) !important',
-                    '&:hover': { color: 'var(--synapse-gray-900) !important' },
-                  }}
+                  className={styles.locatedInLink}
                   href={`${getEndpoint(
                     BackendDestinationEnum.PORTAL_ENDPOINT,
                   )}Synapse:${props.locatedIn?.id}`}
