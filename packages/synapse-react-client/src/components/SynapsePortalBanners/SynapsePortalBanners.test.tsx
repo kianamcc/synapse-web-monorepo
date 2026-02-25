@@ -143,7 +143,7 @@ const portalConfigs: SourceAppConfig[] = [
     requestAffiliation: false,
     isPublicized: true,
     shortDescription: 'Short description',
-    realm: {
+    defaultRealm: {
       id: '0',
       name: 'Synapse',
     },
