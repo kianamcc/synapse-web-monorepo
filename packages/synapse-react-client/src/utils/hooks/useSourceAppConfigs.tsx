@@ -21,7 +21,7 @@ export type SourceAppConfig = {
   requestAffiliation: boolean // If set to true, a special screen is shown requesting the user to fill out UserProfile.company
   isPublicized: boolean // If set to true, this will be included in the list of the available Sage Resources
   shortDescription: string
-  realm: Realm
+  defaultRealm: Realm
 }
 
 export const UNKNOWN_SOURCE_APP_ID = 'unknownSourceAppId'
@@ -36,13 +36,13 @@ export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
   isPublicized: true,
   palette: { ...Palettes.palette },
   shortDescription: '',
-  realm: {
+  defaultRealm: {
     id: '0',
     name: 'Synapse',
   },
 }
 
-type SourceAppConfigWithRealmId = Omit<SourceAppConfig, 'realm'> & {
+type SourceAppConfigWithRealmId = Omit<SourceAppConfig, 'defaultRealm'> & {
   realmId: string
 }
 
@@ -210,7 +210,7 @@ export const useSourceAppConfigs = (
       const realm = realmQueries[index].data
       return {
         ...config,
-        realm,
+        defaultRealm: realm,
       }
     })
   }, [configsWithRealmId, realmQueries])

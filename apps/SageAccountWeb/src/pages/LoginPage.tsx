@@ -107,7 +107,7 @@ function LoginPage(props: LoginPageProps) {
                 }}
                 twoFactorAuthenticationRequired={twoFactorAuthSSOErrorResponse}
                 twoFactorAuthResetUri={`${window.location.origin}/${RESET_2FA_ROUTE}?${RESET_2FA_SIGNED_TOKEN_PARAM}=`}
-                realm={sourceApp?.realm}
+                realm={sourceApp?.defaultRealm}
               />
             </Box>
           </Box>
