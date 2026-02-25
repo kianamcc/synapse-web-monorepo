@@ -138,11 +138,7 @@ function getMenuItemForAction(
       return {
         text: 'Add to Download Cart',
         disabled: addToCartDisabled,
-        tooltipText: addToCartDisabled
-          ? entityType === EntityType.entityview
-            ? 'This view does not include files'
-            : 'No files are directly in this folder'
-          : 'Add file(s) to your download cart',
+        tooltipText: getAddToCartTooltip(entityType, !!addToCartDisabled),
         onClick: () => {
           if (
             entityType === EntityType.file ||
@@ -205,6 +201,24 @@ function getMenuItemForAction(
         tooltipText: 'Export table data',
       }
   }
+}
+
+/**
+ * Determines the tooltip message based on the entity type and its "add to cart" status.
+ */
+const getAddToCartTooltip = (
+  entityType: EntityType,
+  isDisabled: boolean,
+): string => {
+  if (!isDisabled) {
+    return 'Add file(s) to your download cart'
+  }
+
+  if (entityType === EntityType.entityview) {
+    return 'This view does not include files'
+  }
+
+  return 'No files are directly in this folder'
 }
 
 // Function that returns DropdownMenuItem
