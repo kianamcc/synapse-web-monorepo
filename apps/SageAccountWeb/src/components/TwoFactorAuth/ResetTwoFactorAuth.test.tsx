@@ -12,6 +12,8 @@ import { vitest } from 'vitest'
 import { RESET_2FA_SIGNED_TOKEN_PARAM } from '../../Constants'
 import TestWrapper, { TestWrapperProps } from '../../tests/TestWrapper'
 import ResetTwoFactorAuth from '../../pages/ResetTwoFactorAuth'
+import { SourceAppContext } from '@/components/useSourceApp'
+import { STATIC_SOURCE_APP_CONFIG } from 'synapse-react-client/utils/hooks/useSourceAppConfigs'
 
 describe('ResetTwoFactorAuth', () => {
   beforeAll(() => {
@@ -43,11 +45,25 @@ describe('ResetTwoFactorAuth', () => {
     'utf-8',
   ).toString('hex')
 
+  // Mock source app config with a valid realm to avoid skeleton loading state
+  const testSourceAppConfig = {
+    ...STATIC_SOURCE_APP_CONFIG,
+    defaultRealm: {
+      id: '1',
+      name: 'Synapse',
+    },
+  }
+
   function renderComponent(wrapperProps?: TestWrapperProps) {
     const user = userEvent.setup()
-    render(<ResetTwoFactorAuth />, {
-      wrapper: props => <TestWrapper {...props} {...wrapperProps} />,
-    })
+    render(
+      <SourceAppContext.Provider value={testSourceAppConfig}>
+        <ResetTwoFactorAuth />
+      </SourceAppContext.Provider>,
+      {
+        wrapper: props => <TestWrapper {...props} {...wrapperProps} />,
+      },
+    )
     return { user }
   }
 
