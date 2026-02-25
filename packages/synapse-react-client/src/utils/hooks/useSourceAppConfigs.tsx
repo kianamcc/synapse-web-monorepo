@@ -25,6 +25,7 @@ export type SourceAppConfig = {
 }
 
 export const UNKNOWN_SOURCE_APP_ID = 'unknownSourceAppId'
+export const UNKNOWN_REALM_ID = '-1'
 // A static SourceAppConfig to use as a fallback in case the request to get source app configs fails
 export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
   appId: UNKNOWN_SOURCE_APP_ID,
@@ -37,7 +38,7 @@ export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
   palette: { ...Palettes.palette },
   shortDescription: '',
   defaultRealm: {
-    id: '0',
+    id: UNKNOWN_REALM_ID,
     name: 'Synapse',
   },
 }
