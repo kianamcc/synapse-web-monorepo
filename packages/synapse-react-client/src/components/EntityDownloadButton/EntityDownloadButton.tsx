@@ -14,6 +14,7 @@ import {
 } from '@/synapse-queries'
 import {
   hasFilesInView,
+  isDataset,
   isEntityView,
   isVersionableEntity,
 } from '@/utils/functions/EntityTypeUtils'
@@ -214,11 +215,17 @@ const getAddToCartTooltip = (
     return 'Add file(s) to your download cart'
   }
 
-  if (entityType === EntityType.entityview) {
-    return 'This view does not include files'
+  switch (entityType) {
+    case EntityType.entityview:
+      return 'This view does not include files'
+    case EntityType.dataset:
+      return 'This dataset does not include any files'
+    case EntityType.folder:
+    case EntityType.project:
+      return 'No files are directly in this folder'
+    default:
+      return 'No files available to add to cart'
   }
-
-  return 'No files are directly in this folder'
 }
 
 // Function that returns DropdownMenuItem
@@ -409,7 +416,13 @@ export function EntityDownloadButton(props: {
   const entityViewHasNoFiles =
     entityData && isEntityView(entityData) && !hasFilesInView(entityData)
 
-  const addToCartDisabled = hasNoImmediateFileChildren || entityViewHasNoFiles
+  const datasetHasNoFiles =
+    entityData &&
+    isDataset(entityData) &&
+    (!entityData.items || entityData.items.length === 0)
+
+  const addToCartDisabled =
+    hasNoImmediateFileChildren || entityViewHasNoFiles || datasetHasNoFiles
 
   // state to manage export metadata modal visibility
   const [showExportMetadata, setShowExportMetadata] = useState<boolean>(false)
