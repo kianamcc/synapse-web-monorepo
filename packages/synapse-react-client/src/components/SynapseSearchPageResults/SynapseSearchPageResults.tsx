@@ -247,7 +247,7 @@ export function SynapseSearchPageResults(props: SynapseSearchPageResultsProps) {
       const originalTerm = suggestionList.key
       const suggestions = Array.from(suggestionList.values ?? [])
 
-      // Find the best suggestion for each term with the highest score above the threshold
+      // Among suggestions above the score threshold, pick the highest-frequency term.
       const bestSuggestion = suggestions.reduce<Suggestion | null>(
         (best, current) => {
           if (
@@ -256,7 +256,7 @@ export function SynapseSearchPageResults(props: SynapseSearchPageResultsProps) {
           ) {
             return best
           }
-          if (!best || current.score > best.score!) {
+          if (!best || (current.frequency ?? 0) > (best.frequency ?? 0)) {
             return current
           }
           return best
@@ -274,7 +274,10 @@ export function SynapseSearchPageResults(props: SynapseSearchPageResultsProps) {
     if (!hasSuggestion) return null
 
     // Build the corrected search string by replacing misspelled terms
-    const correctedTerms = terms.map(term => suggestionMap.get(term) || term)
+    // Use toLowerCase() because the suggestion API returns keys in lowercase
+    const correctedTerms = terms.map(
+      term => suggestionMap.get(term.toLowerCase()) || term,
+    )
 
     return correctedTerms.join(' ')
   }, [suggestionData, query?.queryTerm])
@@ -518,17 +521,15 @@ export function SynapseSearchPageResults(props: SynapseSearchPageResultsProps) {
         </Box>
       </Box>
       <>
-        {noResults && (
-          <div className={styles.didYouMeanCurrentlyShowing}>
-            {' '}
-            No results found for <b>{query?.queryTerm?.join(' ')}</b>.
-          </div>
-        )}
-        {data && !isSynId && suggestion && !noResults && (
+        {data && !isSynId && suggestion && (
           <div className={styles.didYouMeanContainer}>
             <div className={styles.didYouMeanCurrentlyShowing}>
-              Currently showing results for <b>{query?.queryTerm?.join(' ')}</b>
-              .
+              {!noResults && (
+                <>
+                  Currently showing results for{' '}
+                  <b>{query?.queryTerm?.join(' ')}</b>.
+                </>
+              )}
             </div>
             <div className={styles.didYouMeanSuggestion}>
               <SearchIcon
@@ -551,6 +552,11 @@ export function SynapseSearchPageResults(props: SynapseSearchPageResultsProps) {
                 <ArrowForward />
               </IconButton>
             </div>
+          </div>
+        )}
+        {noResults && (
+          <div className={styles.didYouMeanCurrentlyShowing}>
+            No results found for <b>{query?.queryTerm?.join(' ')}</b>.
           </div>
         )}
         <Box
