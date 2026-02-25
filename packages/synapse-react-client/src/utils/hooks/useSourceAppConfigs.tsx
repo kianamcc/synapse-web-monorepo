@@ -9,6 +9,7 @@ import { QueryFilter } from '@sage-bionetworks/synapse-types'
 import { useQueries, useSuspenseQuery } from '@tanstack/react-query'
 import { useSynapseContext } from '../context/SynapseContext'
 import { tableQueryUseQueryDefaults } from '@/synapse-queries'
+import { getRealmByIdQueryOptions } from '@/synapse-queries/realm/useRealmPrincipals'
 
 export type SourceAppConfig = {
   appId: string // app ID used in the query params
@@ -192,13 +193,9 @@ export const useSourceAppConfigs = (
   // Fetch all realms in parallel
   const realmQueries = useQueries({
     queries:
-      configsWithRealmId?.map(config => ({
-        queryKey: keyFactory.getRealmByIdQueryKey(config.realmId),
-        queryFn: () =>
-          synapseClient.realmServicesClient.getRepoV1RealmId({
-            id: config.realmId,
-          }),
-      })) ?? [],
+      configsWithRealmId?.map(config =>
+        getRealmByIdQueryOptions(config.realmId, keyFactory, synapseClient),
+      ) ?? [],
   })
 
   // Combine configs with realm data
