@@ -24,11 +24,9 @@ export type SourceAppConfig = {
   defaultRealm: Realm
 }
 
-export const UNKNOWN_SOURCE_APP_ID = 'unknownSourceAppId'
-export const UNKNOWN_REALM_ID = '-1'
 // A static SourceAppConfig to use as a fallback in case the request to get source app configs fails
 export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
-  appId: UNKNOWN_SOURCE_APP_ID,
+  appId: 'synapse.org',
   appURL: '',
   description: '',
   friendlyName: 'Synapse',
@@ -38,10 +36,13 @@ export const STATIC_SOURCE_APP_CONFIG: SourceAppConfig = {
   palette: { ...Palettes.palette },
   shortDescription: '',
   defaultRealm: {
-    id: UNKNOWN_REALM_ID,
+    id: '0',
     name: 'Synapse',
   },
 }
+
+// Stable array reference to prevent infinite re-renders
+const FALLBACK_SOURCE_APP_CONFIGS = [STATIC_SOURCE_APP_CONFIG]
 
 type SourceAppConfigWithRealmId = Omit<SourceAppConfig, 'defaultRealm'> & {
   realmId: string
@@ -71,13 +72,21 @@ export const useSourceAppConfigs = (
       queryBundleRequest,
       false,
     ),
-    queryFn: () =>
-      SynapseClient.getQueryTableAsyncJobResults(
-        queryBundleRequest,
-        accessToken,
-      ),
+    queryFn: async () => {
+      try {
+        return await SynapseClient.getQueryTableAsyncJobResults(
+          queryBundleRequest,
+          accessToken,
+        )
+      } catch (_error) {
+        // Return null on error to signal fallback behavior
+        return null
+      }
+    },
   })
+
   const rowSet = tableQueryResult?.responseBody?.queryResult?.queryResults
+
   // transform row data to SourceAppConfigWithRealmId[]
   const headers = rowSet?.headers
   const appIdColIndex = headers?.findIndex(
@@ -201,6 +210,11 @@ export const useSourceAppConfigs = (
 
   // Combine configs with realm data
   return useMemo(() => {
+    // If query returned null (error case) or no rowSet, return static config fallback
+    if (!tableQueryResult || !rowSet) {
+      return FALLBACK_SOURCE_APP_CONFIGS
+    }
+
     if (!configsWithRealmId) return undefined
 
     // Check if all realm queries have succeeded
@@ -214,5 +228,5 @@ export const useSourceAppConfigs = (
         defaultRealm: realm,
       }
     })
-  }, [configsWithRealmId, realmQueries])
+  }, [configsWithRealmId, realmQueries, tableQueryResult, rowSet])
 }

@@ -25,7 +25,6 @@ describe('ResetTwoFactorAuth', () => {
 
   afterEach(() => {
     server.resetHandlers()
-    cleanup() // Clean up DOM after each test
   })
 
   afterAll(() => {

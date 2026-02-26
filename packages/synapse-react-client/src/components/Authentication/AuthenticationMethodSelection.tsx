@@ -9,14 +9,13 @@ import {
   LOGIN_METHOD_OAUTH2_SAGE_BIONETWORKS,
   OAUTH2_PROVIDERS,
 } from '@/utils/SynapseConstants'
-import { Box, Skeleton } from '@mui/material'
+import { Box } from '@mui/material'
 import { MouseEvent } from 'react'
 import LoginMethodButton from './LoginMethodButton'
 import { useGetFeatureFlag } from '@/synapse-queries/featureflags/useGetFeatureFlag'
 import { FeatureFlagEnum } from '@sage-bionetworks/synapse-types'
 import { Realm } from '@sage-bionetworks/synapse-client'
 import { hasArcusProvider } from '@/utils/functions/RealmUtils'
-import { UNKNOWN_REALM_ID } from '@/utils/hooks/useSourceAppConfigs'
 
 type AuthenticationMethodSelectionProps = {
   ssoRedirectUrl?: string
@@ -49,9 +48,6 @@ export default function AuthenticationMethodSelection(
   const showSageBionetworksIdp = useGetFeatureFlag(
     FeatureFlagEnum.SAGE_BIONETWORKS_IDP,
   )
-  if (realm?.id === UNKNOWN_REALM_ID) {
-    return <Skeleton variant="rectangular" width="100%" height={80} />
-  }
 
   const stateWithCSRF: OAuth2State = { ...state, csrfToken }
 
