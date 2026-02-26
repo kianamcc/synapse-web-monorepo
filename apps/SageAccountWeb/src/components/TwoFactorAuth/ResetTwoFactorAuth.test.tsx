@@ -1,12 +1,6 @@
 import { server } from '@/mocks/node.js'
 import { TwoFactorAuthResetToken } from '@sage-bionetworks/synapse-types'
-import {
-  render,
-  screen,
-  waitFor,
-  within,
-  cleanup,
-} from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { vitest } from 'vitest'
 import { RESET_2FA_SIGNED_TOKEN_PARAM } from '../../Constants'
