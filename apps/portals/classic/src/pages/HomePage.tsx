@@ -18,7 +18,7 @@ import {
 import { FeaturedResearch } from 'synapse-react-client'
 import ClassicSupportedByNIABanner from '@sage-bionetworks/synapse-portal-framework/components/classic/ClassicSupportedByNIABanner/ClassicSupportedByNIABanner'
 import ClassicDevelopedBySage from '@sage-bionetworks/synapse-portal-framework/components/classic/ClassicDevelopedBySage'
-import { visuallyHidden } from '@mui/utils'
+import { visuallyHidden } from 'synapse-react-client'
 
 function HomePageInternal() {
   const theme = useTheme()

@@ -4,7 +4,7 @@ import HeaderSearchBox from '../HeaderSearchBox'
 import { AddAlertTwoTone } from '@mui/icons-material'
 import { TypeAnimation } from 'react-type-animation'
 import headerBackground from '../assets/cckp-header-background.jpeg'
-import { visuallyHidden } from '@mui/utils'
+import { visuallyHidden } from 'synapse-react-client'
 
 const CancerComplexityHeader = (): React.ReactNode => {
   const searchPlaceholder = 'Search for cancer related data and resources'

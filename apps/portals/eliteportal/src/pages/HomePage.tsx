@@ -33,7 +33,7 @@ import {
 } from '../config/resources'
 import { useNavigate } from 'react-router'
 import { HomePageThemeProvider } from '@/themes/HomePageThemeProvider'
-import { visuallyHidden } from '@mui/utils'
+import { visuallyHidden } from 'synapse-react-client'
 
 function HomePageInternal() {
   const theme = useTheme()

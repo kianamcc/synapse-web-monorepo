@@ -8,8 +8,8 @@ import {
   homepageBodyText,
   sidePadding,
   titleSx,
+  visuallyHidden,
 } from '@/components/SynapseHomepageV2/HomepageStyles'
-import { visuallyHidden } from '@mui/utils'
 import { SAGE_OFFERINGS_HELP_URL } from '@/utils/SynapseConstants'
 import {
   Box,
