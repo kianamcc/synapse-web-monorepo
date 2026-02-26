@@ -22,9 +22,10 @@ import FavoriteButton from '../favorites/FavoriteButton'
 import { EntityDownloadButton } from '../EntityDownloadButton/EntityDownloadButton'
 import HasAccessChip from './HasAccessChip'
 import { searchResultsCardChipStyles } from './chipStyles'
-import useGetEntityMetadata from '@/utils/hooks/useGetEntityMetadata'
 import styles from './SynapseSearchResultsCard.module.scss'
 import { calculateFriendlyFileSize } from '@/utils/functions/calculateFriendlyFileSize'
+import { useGetEntityBundle } from '@/synapse-queries'
+import { FileHandleWithPreview } from '../EntityFinder/details/view/table/TableCellTypes'
 
 export type SynapseSearchResultsCardProps = {
   entityId: string
@@ -50,11 +51,20 @@ const SynapseSearchResultsCardContainer: StyledComponent<PaperProps> = styled(
 })
 
 export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
-  const { fileHandle } = useGetEntityMetadata(
-    props.entityType === EntityType.file ? props.entityId : '',
+  const { data: entityBundle } = useGetEntityBundle(
+    props.entityId,
+    undefined,
+    { includeFileHandles: true },
+    { enabled: props.entityType === EntityType.file },
   )
 
-  const fileSize = fileHandle?.contentSize
+  const file = entityBundle?.fileHandles.find(
+    (file: FileHandleWithPreview) => file.isPreview !== true,
+  )
+
+  const friendlySize = file?.contentSize
+    ? calculateFriendlyFileSize(file?.contentSize)
+    : ''
 
   return (
     <SynapseSearchResultsCardContainer>
@@ -125,23 +135,25 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
               {formatDate(dayjs.unix(props.modifiedOn), 'M/D/YYYY')}
             </Typography>
           </Box>
-          {fileSize && (
+          {friendlySize && (
             <Box sx={{ display: 'flex' }}>
               <InfoOutline className={styles.cardMetadataIcon} />
               <Typography className={styles.cardMetadataTypographyWithIcon}>
-                File size: <b>{calculateFriendlyFileSize(fileSize)}</b>
+                File size: <b>{friendlySize}</b>
               </Typography>
             </Box>
           )}
           {props.locatedIn && (
-            <Box sx={{ display: 'flex', marginLeft: '24px' }}>
+            <Box
+              sx={{ display: 'flex', marginLeft: '24px', alignItems: 'center' }}
+            >
               <EntityTypeIcon
                 type={EntityType.project}
                 wrap={false}
                 sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
               />
               <Typography className={styles.cardMetadataTypographyWithIcon}>
-                Located in:{' '}
+                Located in:
               </Typography>
               <Link
                 className={styles.locatedInLink}
@@ -149,7 +161,7 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
                   BackendDestinationEnum.PORTAL_ENDPOINT,
                 )}Synapse:${props.locatedIn?.id}`}
               >
-                {props.locatedIn?.name}{' '}
+                {props.locatedIn?.name}
               </Link>
             </Box>
           )}
