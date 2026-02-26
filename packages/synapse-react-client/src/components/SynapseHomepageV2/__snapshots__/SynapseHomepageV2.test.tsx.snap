@@ -139,16 +139,19 @@ exports[`SynapseHomepageV2 Snapshot test > Basic home page 1`] = `
       <h1
         class="MuiTypography-root MuiTypography-headline1 css-h1t3az-MuiTypography-root"
       >
-        Explore the data
-      </h1>
-      <h1
-        class="MuiTypography-root MuiTypography-headline1 css-h1t3az-MuiTypography-root"
-      >
+        Explore the data 
+        <br />
         behind 
         <span
+          aria-hidden="true"
           class="index-module_type__E-SaG"
           style="color: rgb(181, 211, 206);"
         />
+        <span
+          class="MuiBox-root css-w1l3do"
+        >
+          the next cure, the next diagnostic, the next preventive therapy
+        </span>
       </h1>
     </div>
     <div
