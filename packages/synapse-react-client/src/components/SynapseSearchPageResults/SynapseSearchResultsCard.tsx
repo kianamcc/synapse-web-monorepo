@@ -135,22 +135,22 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
           )}
           {props.locatedIn && (
             <Box sx={{ display: 'flex', marginLeft: '24px' }}>
+              <EntityTypeIcon
+                type={EntityType.project}
+                wrap={false}
+                sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
+              />
               <Typography className={styles.cardMetadataTypographyWithIcon}>
                 Located in:{' '}
-                <EntityTypeIcon
-                  type={EntityType.project}
-                  wrap={false}
-                  sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
-                />{' '}
-                <Link
-                  className={styles.locatedInLink}
-                  href={`${getEndpoint(
-                    BackendDestinationEnum.PORTAL_ENDPOINT,
-                  )}Synapse:${props.locatedIn?.id}`}
-                >
-                  {props.locatedIn?.name}{' '}
-                </Link>
               </Typography>
+              <Link
+                className={styles.locatedInLink}
+                href={`${getEndpoint(
+                  BackendDestinationEnum.PORTAL_ENDPOINT,
+                )}Synapse:${props.locatedIn?.id}`}
+              >
+                {props.locatedIn?.name}{' '}
+              </Link>
             </Box>
           )}
         </Stack>
