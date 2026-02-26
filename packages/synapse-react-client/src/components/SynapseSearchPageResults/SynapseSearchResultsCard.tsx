@@ -4,7 +4,11 @@ import {
   getEndpoint,
 } from '@/utils/functions/getEndpoint'
 import { StyledComponent } from '@emotion/styled'
-import { InfoOutline, Update as UpdateIcon } from '@mui/icons-material'
+import {
+  DashboardTwoTone,
+  InfoOutline,
+  Update as UpdateIcon,
+} from '@mui/icons-material'
 import {
   Box,
   Chip,
@@ -147,14 +151,15 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
             <Box
               sx={{ display: 'flex', marginLeft: '24px', alignItems: 'center' }}
             >
-              <EntityTypeIcon
-                type={EntityType.project}
-                wrap={false}
-                sx={{ color: 'var(--synapse-gray-700)', width: '24px' }}
-              />
               <Typography className={styles.cardMetadataTypographyWithIcon}>
-                Located in:
+                Located in:{' '}
               </Typography>
+              <DashboardTwoTone
+                className={styles.cardMetadataIcon}
+                sx={{
+                  marginRight: '4px',
+                }}
+              />
               <Link
                 className={styles.locatedInLink}
                 href={`${getEndpoint(
