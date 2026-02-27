@@ -131,6 +131,7 @@ function getMenuItemForAction(
   versionNumber?: number,
   addToCartDisabled?: boolean,
   onDownloadFile?: () => void,
+  isAuthenticated?: boolean,
 ): DropdownMenuItem {
   switch (downloadAction) {
     case DownloadAction.downloadFile:
@@ -139,7 +140,10 @@ function getMenuItemForAction(
         onClick: () => {
           if (onDownloadFile) onDownloadFile()
         },
-        tooltipText: 'Download this file directly',
+        tooltipText: isAuthenticated
+          ? 'Download this file directly'
+          : 'Sign in to download this file',
+        disabled: !isAuthenticated,
       }
     case DownloadAction.addToCart:
       return {
@@ -354,7 +358,7 @@ export function EntityDownloadButton(props: {
   )
 
   // Get context and download functionality
-  const { downloadCartPageUrl } = useSynapseContext()
+  const { downloadCartPageUrl, isAuthenticated } = useSynapseContext()
   const { mutate: addFileToDownloadList } = useAddFileToDownloadList({
     onSuccess: data => {
       if (data.numberOfFilesAdded > 0) {
@@ -460,6 +464,7 @@ export function EntityDownloadButton(props: {
         latestVersionNumber,
         addToCartDisabled,
         onDownloadFile,
+        isAuthenticated,
       ),
     ),
   )
