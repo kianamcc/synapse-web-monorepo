@@ -30,7 +30,7 @@ import {
 } from '@/synapse-queries/index'
 import { displayFilesWereAddedToDownloadListSuccess } from '../download_list/DownloadConfirmationUtils'
 import { displayToast } from '../ToastMessage/index'
-import { useDirectDownloadLink } from '../DirectDownload/useDirectDownloadLink'
+import { useDirectDownloadLink } from '@/utils/hooks/useDirectDownloadLink'
 import { isFileEntity } from '@/utils/types/IsType'
 
 // WIP

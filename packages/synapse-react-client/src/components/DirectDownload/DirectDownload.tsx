@@ -8,7 +8,7 @@ import {
 import { forwardRef } from 'react'
 import IconSvg, { IconSvgProps } from '../IconSvg/IconSvg'
 import { TOOLTIP_DELAY_SHOW } from '../SynapseTable/SynapseTableConstants'
-import { useDirectDownloadLink } from './useDirectDownloadLink'
+import { useDirectDownloadLink } from '@/utils/hooks/useDirectDownloadLink'
 
 export type DirectFileDownloadProps = {
   associatedObjectId: string
