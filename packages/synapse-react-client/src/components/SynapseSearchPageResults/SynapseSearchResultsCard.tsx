@@ -3,6 +3,7 @@ import {
   BackendDestinationEnum,
   getEndpoint,
 } from '@/utils/functions/getEndpoint'
+import { useInView } from 'react-intersection-observer'
 import { StyledComponent } from '@emotion/styled'
 import {
   DashboardTwoTone,
@@ -55,11 +56,16 @@ const SynapseSearchResultsCardContainer: StyledComponent<PaperProps> = styled(
 })
 
 export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    rootMargin: '250px 0px',
+  })
+
   const { data: entityBundle } = useGetEntityBundle(
     props.entityId,
     undefined,
     { includeFileHandles: true },
-    { enabled: props.entityType === EntityType.file },
+    { enabled: props.entityType === EntityType.file && inView },
   )
 
   const file = entityBundle?.fileHandles.find(
@@ -71,7 +77,7 @@ export function SynapseSearchResultsCard(props: SynapseSearchResultsCardProps) {
     : ''
 
   return (
-    <SynapseSearchResultsCardContainer>
+    <SynapseSearchResultsCardContainer ref={ref}>
       <Box
         sx={{
           display: 'flex',
