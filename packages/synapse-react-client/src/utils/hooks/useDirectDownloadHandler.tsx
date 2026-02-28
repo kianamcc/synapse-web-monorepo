@@ -7,20 +7,27 @@ import {
 } from '@sage-bionetworks/synapse-types'
 import UAParser from 'ua-parser-js'
 
-type DirectDownloadLinkProps = {
+type DirectDownloadHandlerProps = {
   fileHandleId: string
   associatedObjectId: string
   associatedObjectType: FileHandleAssociateType
 }
 
-export function useDirectDownloadLink() {
+/**
+ * Returns a 'downloadFile' function that fetches a presigned URL for a file
+ * handle and opens it in the browser to trigger a direct download.
+ *
+ * To bypass Safari's popup blocker, this function must be invoked
+ * within a user-triggered event handler (ex, inside an onClick callback).
+ */
+export function useDirectDownloadHandler() {
   const { accessToken } = useSynapseContext()
 
   const downloadFile = async ({
     fileHandleId,
     associatedObjectId,
     associatedObjectType,
-  }: DirectDownloadLinkProps) => {
+  }: DirectDownloadHandlerProps) => {
     // SWC-5907: opening in the file must be strictly done in the same click event process (Safari only).
     // https://stackoverflow.com/questions/6628949/window-open-popup-getting-blocked-during-click-event
     const parser = new UAParser()

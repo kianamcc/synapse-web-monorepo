@@ -8,7 +8,7 @@ import {
 import { forwardRef } from 'react'
 import IconSvg, { IconSvgProps } from '../IconSvg/IconSvg'
 import { TOOLTIP_DELAY_SHOW } from '../SynapseTable/SynapseTableConstants'
-import { useDirectDownloadLink } from '@/utils/hooks/useDirectDownloadLink'
+import { useDirectDownloadHandler } from '@/utils/hooks/useDirectDownloadHandler'
 
 export type DirectFileDownloadProps = {
   associatedObjectId: string
@@ -124,7 +124,7 @@ function DirectDownload(props: DirectFileDownloadProps) {
     ? (fileHandle as ExternalFileHandle).externalURL
     : undefined
 
-  const { downloadFile } = useDirectDownloadLink()
+  const { downloadFile } = useDirectDownloadHandler()
 
   const getDownloadLink = async () => {
     await downloadFile({

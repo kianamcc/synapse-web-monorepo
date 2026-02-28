@@ -30,7 +30,7 @@ import {
 } from '@/synapse-queries/index'
 import { displayFilesWereAddedToDownloadListSuccess } from '../download_list/DownloadConfirmationUtils'
 import { displayToast } from '../ToastMessage/index'
-import { useDirectDownloadLink } from '@/utils/hooks/useDirectDownloadLink'
+import { useDirectDownloadHandler } from '@/utils/hooks/useDirectDownloadHandler'
 import { isFileEntity } from '@/utils/types/IsType'
 
 // WIP
@@ -413,7 +413,7 @@ export function EntityDownloadButton(props: {
 
   const { data: entityData } = useGetEntity(props.entityId)
 
-  const { downloadFile } = useDirectDownloadLink()
+  const { downloadFile } = useDirectDownloadHandler()
 
   const fileHandleId =
     entityData && isFileEntity(entityData)
