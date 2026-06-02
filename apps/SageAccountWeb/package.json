@@ -16,7 +16,7 @@
     "@sage-bionetworks/synapse-portal-framework": "workspace:*",
     "@sage-bionetworks/synapse-types": "workspace:*",
     "@tanstack/react-query": "5.80.10",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.21",
     "katex": "^0.16.22",
     "lodash-es": "^4.17.21",
     "plotly.js-basic-dist": "^2.35.3",

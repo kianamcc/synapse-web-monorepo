@@ -29,7 +29,7 @@
     "@tanstack/react-query": "5.80.10",
     "@upsetjs/react": "^1.11.0",
     "clone-deep": "^4.0.1",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.21",
     "katex": "^0.16.22",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
