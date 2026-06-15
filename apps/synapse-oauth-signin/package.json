@@ -26,7 +26,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/katex": "^0.16.8",
-    "@types/node": "^22.19.20",
+    "@types/node": "^25.9.3",
     "@types/plotly.js": "^2.35.14",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
