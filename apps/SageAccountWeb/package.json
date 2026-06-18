@@ -34,7 +34,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/js-cookie": "^3.0.6",
     "@types/katex": "^0.16.8",
-    "@types/node": "^22.19.20",
+    "@types/node": "^25.9.3",
     "@types/plotly.js": "^2.35.14",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
